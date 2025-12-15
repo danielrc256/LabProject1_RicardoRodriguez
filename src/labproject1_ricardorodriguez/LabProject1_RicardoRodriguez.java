@@ -23,6 +23,7 @@ public class LabProject1_RicardoRodriguez {
         System.out.println("a los almacenes de  DHL ('D, H, L'). ");
         System.out.println("Pero cuidado con los obstaculos 'X','O','o','0','^','/','\','|'");
         System.out.println("que te causaran un GAME OVER");
+        System.out.println("");
         
         // Validación de perder o ganar
         boolean ganar = false; // Verficiación de que no quedan regalos
@@ -31,6 +32,14 @@ public class LabProject1_RicardoRodriguez {
         // Posicion del jugador
         int posCol = 12;
         int posFil = 3;
+        int oldPosCol=posCol;
+        int oldPosFil=posFil;
+        
+        // Acción del jugador
+        boolean guardar=false;
+        boolean recoger=false;
+        boolean dejar=false;
+        boolean encimaDeRegalo=false;
         
         // Tablero
         char[][] tablero = new char[24][24];
@@ -51,7 +60,6 @@ public class LabProject1_RicardoRodriguez {
         
         // Inicio de el juego en si
         do {
-            System.out.println("");
             System.out.println("Comandos: ");
             System.out.println("U:Arriba");
             System.out.println("D:Abajo");
@@ -59,10 +67,48 @@ public class LabProject1_RicardoRodriguez {
             System.out.println("R:Derecha");
             System.out.println("F:Recoger/Poner caja");
             comandos=ValidacionComandos(tablero);
-            tablero=MoverJugador(tablero,comandos, posCol, posFil);
             
+            // Posicion anterior del jugador
+            oldPosCol=posCol;
+            oldPosFil=posFil;
+            // Posición del jugador
+            posCol=MoverJugadorX(tablero,comandos, posCol, posFil);
+            posFil=MoverJugadorY(tablero,comandos, posCol, posFil);
+            
+            
+            
+            
+            // Tocar Obstáculo
+            if (    // inicio del if
+                    // Obstáculos
+                    tablero[posCol][posFil]=='X'||
+                    tablero[posCol][posFil]=='O'||
+                    tablero[posCol][posFil]=='o'||
+                    tablero[posCol][posFil]=='0'||
+                    tablero[posCol][posFil]=='^'||
+                    // Árbol
+                    tablero[posCol][posFil]=='/'||
+                    tablero[posCol][posFil]=='\\'||
+                    tablero[posCol][posFil]=='-'||
+                    tablero[posCol][posFil]=='|'
+               )    
+            { 
+                // adentro del if
+                perder=true;
+                tablero[posCol][posFil]='!';
+                break;
+            }   // cierre del if
+            
+            // Validación de ganar
+            ganar=VerificarTablero(tablero);
+            if (ganar==true){
+                break;
+            }
+            
+            // Imprimir el tablero
             ImprimirTablero(tablero);
-            break;
+            System.out.println("");
+            
         } while (ganar==false||perder==false);
         
         // Mostrar ganar en consola
@@ -82,9 +128,65 @@ public class LabProject1_RicardoRodriguez {
             System.out.println("Oops, parece que has chocado con un adorno del arbol de Navidad.");
         }
         
-        
     }
-    public static char[][] MoverJugador(char[][]tablero, String comandos, int posCol, int posFil){
+    
+    public static void AccionJugador(char[][] tablero, int posCol, int posFil, String comandos, boolean guardar, boolean recoger, boolean dejar, boolean encimaDeRegalo) {
+        char caracter = ' ';
+        for (int i = 0; i <= comandos.length() - 1; i += 2) {
+            caracter = comandos.charAt(i);
+            if (caracter == 'F') {
+                
+                // Ver si el jugador esta sobre un regalo
+                if (tablero[posCol][posFil] == 'j') {
+                    encimaDeRegalo = true;  // Si el jugador esta sobre un regalo
+                } else {
+                    encimaDeRegalo = false; // Si el jugador quiere dejar un regalo o no esta encima de este
+                }
+                
+                // Para recoger un regalo
+                if (encimaDeRegalo==true){
+                    recoger=true;  // Si el jugador esta sobre un regalo, recogiendo el regalo
+                } else {
+                    recoger=false; // Si el jugador esta dejando un regalo o no esta en un espacio j
+                }
+                
+                // Para guardar un regalo
+                if (recoger==true){
+                    guardar=true;  // Si el jugador esta sobre un regalo, recogiendo el regalo y guardandolo
+                } else {
+                    guardar=false; // Si el jugador no tiene un regalo
+                }
+                
+                // Para dejar un regalo
+                if (guardar==true){
+                    if (encimaDeRegalo==false){
+                        tablero[posCol][posFil] = 'j';
+                        tablero[posCol-1][posFil] = 'S';
+                    }
+                }
+            }
+        }
+    }
+    public static int MoverJugadorX(char[][]tablero, String comandos, int posCol, int posFil){
+        char caracter=' ';
+        for (int i = 0; i <= comandos.length()-1; i+=2) {
+            caracter=comandos.charAt(i);
+            switch (caracter){
+                case 'L':
+                    if (posCol>0){
+                        posCol-=1;
+                    }
+                    break;
+                case 'R':
+                    if (posCol<23){
+                        posCol+=1;
+                    }
+                    break;
+            }
+        }
+        return posCol;
+    }
+    public static int MoverJugadorY(char[][]tablero, String comandos, int posCol, int posFil){
         char caracter=' ';
         for (int i = 0; i <= comandos.length()-1; i+=2) {
             caracter=comandos.charAt(i);
@@ -99,21 +201,11 @@ public class LabProject1_RicardoRodriguez {
                         posFil+=1;
                     }
                     break;
-                case 'L':
-                    if (posCol>0){
-                        posCol-=1;
-                    }
-                    break;
-                case 'R':
-                    if (posCol<23){
-                        posCol+=1;
-                    }
-                    break;
-                case 'F':
             }
         }
-        return tablero;
+        return posFil;
     }
+    
     public static void ImprimirTablero(char[][]tablero){
         // Imprime el tablero
         for (int i = 0; i < 24; i++) {
@@ -250,18 +342,25 @@ public class LabProject1_RicardoRodriguez {
     }
     
     public static boolean VerificarTablero(char[][]tablero){
-        // Verifica que ya no hayan regalos en el tablero
+        // Verifica que ya no hayan estaciones en el tablero
         char caracter = ' ';
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 24; j++) {
                 caracter = tablero[j][i];
-                if (caracter=='j'){
+                if (caracter=='D'){
+                    return false; // Continua el juego
+                }
+                if (caracter=='H'){
+                    return false; // Continua el juego
+                }
+                if (caracter=='L'){
                     return false; // Continua el juego
                 }
             }
         }
         return true; // Finaliza con ganar=true
     }
+    
     public static String ValidacionComandos(char[][] tablero) {
         boolean validez=false;
         char caracter = ' ';
