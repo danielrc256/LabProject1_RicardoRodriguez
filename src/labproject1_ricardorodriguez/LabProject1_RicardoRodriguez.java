@@ -227,8 +227,8 @@ public class LabProject1_RicardoRodriguez {
             } 
 
             //Imprimir el tablero interno (Debug)
-            ImprimirTablero(tableroInterno);
-            System.out.println("");
+            //ImprimirTablero(tableroInterno);
+            //System.out.println("");
             
         } while (ganar==false||perder==false);
         
