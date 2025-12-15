@@ -15,38 +15,53 @@ public class LabProject1_RicardoRodriguez {
      */
     public static Scanner input = new Scanner (System.in);
     public static void main(String[] args) {
+        
         System.out.println("Bienvenid@ a la entrega de paquetes de DHL");
         System.out.println("");
         System.out.println("Debes hacer que Steeb 'S' entregue ");
         System.out.println("cada una de las cajas de dulce representadas con 'j'");
         System.out.println("a los almacenes de  DHL ('D, H, L'). ");
-        System.out.println("Pero cuidado con los obstaculos 'X','O','o','0','^','/','|'");
+        System.out.println("Pero cuidado con los obstaculos 'X','O','o','0','^','/','\','|'");
         System.out.println("que te causaran un GAME OVER");
-                
+        
         // Validación de perder o ganar
         boolean ganar = false; // Verficiación de que no quedan regalos
-        boolean perder= false; // Verificación de tocar algpun obstáculo
+        boolean perder= false; // Verificación de tocar algún obstáculo
         
-        // Coordenadas a eligir
-        int coordenadaX = 0;
-        int coordenadaY = 0;
+        // Posicion del jugador
+        int posX = 0;
+        int posY = 0;
         
-        // Accion de 
-        int accion = 0;
-        
-        // Tablero interno
+        // Tablero
         char[][] tablero = new char[24][24];
         
         // Generar el tablero
-        GenerarTablero(tablero);
+        tablero=GenerarTablero(tablero);
         
         // Imprimir el tablero
         ImprimirTablero(tablero);
+        System.out.println("");
+        
+        // Validaciones de las cajas
+        boolean tieneCaja=false;
+        
+        // Comandos del usuario
+        String comandos = "";
         
         
         // Inicio de el juego en si
         do {
-            
+            ImprimirTablero(tablero);
+            System.out.println("");
+            System.out.println("Comandos: ");
+            System.out.println("U:Arriba");
+            System.out.println("D:Abajo");
+            System.out.println("L:Izquierda");
+            System.out.println("R:Derecha");
+            System.out.println("F:Recoger/Poner caja");
+            System.out.println("");
+            System.out.println("Ingrese los comandos separados por ',': ");
+            break;
         } while (ganar==false||perder==false);
         
         // Mostrar ganar en consola
@@ -55,7 +70,7 @@ public class LabProject1_RicardoRodriguez {
             System.out.println("");
             ImprimirTablero(tablero);
             System.out.println("");
-            System.out.println("Felicidades, ha logrado que Steeb entregue los dulceos para esta navidad!");
+            System.out.println("Felicidades, ha logrado que Steeb entregue los dulces para esta navidad!");
         }
         // Mostrar perder en consola
         if (perder==true){
@@ -77,15 +92,129 @@ public class LabProject1_RicardoRodriguez {
             System.out.println("");
         }
     }
-    public static void GenerarTablero(char[][]tablero){
+    public static char[][] GenerarTablero(char[][]tablero){
+        /*
+        tablero[columna][fila]='caracter';
+        tablero[][]='';
+        */
+        
         // Genera todos los obstaculos y regalos en el tablero
+        
+        //Espacios
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 24; j++) {
-                System.out.print("["+tablero[j][i]+"]");
+                tablero[j][i]=' ';
             }
-            System.out.println("");
         }
+        // X
+        tablero[1][1]='X';
+        tablero[1][2]='x';
+        tablero[1][3]='x';
+        tablero[2][3]='x';
+        tablero[3][1]='x';
+        tablero[3][2]='x';
+        tablero[3][3]='x';
+        
+        tablero[20][1]='x';
+        tablero[21][1]='x';
+        tablero[22][1]='x';
+        tablero[23][1]='x';
+        
+        tablero[1][11]='x';
+        tablero[1][12]='x';
+        tablero[2][11]='x';
+        tablero[3][11]='x';
+        tablero[3][12]='x';
+        
+        tablero[23][8]='x';
+        tablero[23][9]='x';
+        tablero[23][10]='x';
+        tablero[22][8]='x';
+        tablero[22][10]='x';
+        
+        tablero[3][20]='x';
+        tablero[3][21]='x';
+        tablero[4][21]='x';
+        
+        tablero[21][18]='x';
+        tablero[21][19]='x';
+        tablero[20][19]='x';
+        
+        // DHL
+        tablero[2][2]='D';
+        tablero[23][0]='H';
+        tablero[2][12]='L';
+        tablero[22][9]='D';
+        tablero[4][20]='H';
+        tablero[20][18]='L';
+        
+        // \
+        tablero[5][12]='/';
+        tablero[4][13]='/';
+        tablero[6][11]='/';
+        tablero[7][10]='/';
+        tablero[8][9]='/';
+        tablero[9][8]='/';
+        tablero[11][6]='/';
+        
+        // /
+        tablero[12][6]='\\';
+        tablero[13][7]='\\';
+        tablero[14][8]='\\';
+        tablero[15][9]='\\';
+        tablero[16][10]='\\';
+        tablero[17][11]='\\';
+        tablero[19][13]='\\';
+        tablero[18][12]='\\';
+        
+        // -
+        for (int i = 4; i <=19; i++) {
+            tablero[i][14]='-';
+        }
+        tablero[12][14]=' ';
+        tablero[8][14]=' ';
+        tablero[4][14]='-';
+        
+        // O
+        tablero[7][12]='O';
+        tablero[12][7]='O';
+        tablero[11][12]='O';
+        tablero[14][13]='O';
+        
+        // 0
+        tablero[6][13]='0';
+        tablero[9][10]='0';
+        tablero[16][13]='0';
+        
+        // o
+        tablero[10][9]='o';
+        tablero[10][13]='o';
+        tablero[12][11]='o';
+        tablero[14][11]='o';
+        
+        // ^
+        tablero[8][11]='^';
+        tablero[10][11]='^';
+        tablero[13][12]='^';
+        
+        // |
+        tablero[11][15]='|';
+        tablero[11][16]='|';
+        tablero[11][17]='|';
+        tablero[12][16]='|';
+        tablero[12][17]='|';
+        
+        // j
+        tablero[9][12]='j';
+        tablero[12][13]='j';
+        tablero[11][8]='j';
+        tablero[11][10]='j';
+        tablero[14][9]='j';
+        tablero[15][10]='j';
+        
+        return tablero;
     }
+    
     public static boolean VerificarTablero(char[][]tablero){
         // Verifica que ya no hayan regalos en el tablero
         char caracter = ' ';
