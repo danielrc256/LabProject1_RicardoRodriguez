@@ -29,8 +29,8 @@ public class LabProject1_RicardoRodriguez {
         boolean perder= false; // Verificación de tocar algún obstáculo
         
         // Posicion del jugador
-        int posX = 0;
-        int posY = 0;
+        int posCol = 12;
+        int posFil = 3;
         
         // Tablero
         char[][] tablero = new char[24][24];
@@ -51,7 +51,6 @@ public class LabProject1_RicardoRodriguez {
         
         // Inicio de el juego en si
         do {
-            ImprimirTablero(tablero);
             System.out.println("");
             System.out.println("Comandos: ");
             System.out.println("U:Arriba");
@@ -59,8 +58,10 @@ public class LabProject1_RicardoRodriguez {
             System.out.println("L:Izquierda");
             System.out.println("R:Derecha");
             System.out.println("F:Recoger/Poner caja");
-            System.out.println("");
-            System.out.println("Ingrese los comandos separados por ',': ");
+            comandos=ValidacionComandos(tablero);
+            tablero=MoverJugador(tablero,comandos, posCol, posFil);
+            
+            ImprimirTablero(tablero);
             break;
         } while (ganar==false||perder==false);
         
@@ -82,6 +83,36 @@ public class LabProject1_RicardoRodriguez {
         }
         
         
+    }
+    public static char[][] MoverJugador(char[][]tablero, String comandos, int posCol, int posFil){
+        char caracter=' ';
+        for (int i = 0; i <= comandos.length()-1; i+=2) {
+            caracter=comandos.charAt(i);
+            switch (caracter){
+                case 'U':
+                    if (posFil>0){
+                        posFil-=1;
+                    }
+                    break;
+                case 'D':
+                    if (posFil<23){
+                        posFil+=1;
+                    }
+                    break;
+                case 'L':
+                    if (posCol>0){
+                        posCol-=1;
+                    }
+                    break;
+                case 'R':
+                    if (posCol<23){
+                        posCol+=1;
+                    }
+                    break;
+                case 'F':
+            }
+        }
+        return tablero;
     }
     public static void ImprimirTablero(char[][]tablero){
         // Imprime el tablero
@@ -212,6 +243,9 @@ public class LabProject1_RicardoRodriguez {
         tablero[14][9]='j';
         tablero[15][10]='j';
         
+        // jugador
+        tablero[12][3]='S';
+        
         return tablero;
     }
     
@@ -228,8 +262,54 @@ public class LabProject1_RicardoRodriguez {
         }
         return true; // Finaliza con ganar=true
     }
-    public static void MoverJugador(char[][]tablero){
-        
+    public static String ValidacionComandos(char[][] tablero) {
+        boolean validez=false;
+        char caracter = ' ';
+        char caracter2 = ' ';
+        char caracterFinal=' ';
+        String comandos="";
+        do {
+            System.out.println("");
+            System.out.println("Ingrese los comandos separados por ',': ");
+            comandos = input.next();
+            for (int i = 0; i < comandos.length() - 1; i += 2) {
+                // Char final
+                caracterFinal=comandos.charAt(comandos.length()-1);
+                // Letras
+                caracter = comandos.charAt(i);
+                // Comas
+                if (i <= comandos.length()-1) {
+                    caracter2 = comandos.charAt(i + 1);
+                    if (caracterFinal==','){
+                        System.out.println("No deje comas al final.");
+                        break;
+                    }
+                    if (caracter == 'u' || caracter == 'd' || caracter == 'l' || caracter == 'r' || caracter == 'f') {
+                        System.out.println("Ingrese letras en mayusculas.");
+                        break;
+                    }
+                    if (caracter == 'U' || caracter == 'D' || caracter == 'L' || caracter == 'R' || caracter == 'F') {
+                        if (!(caracterFinal == 'U' || caracterFinal == 'D' || caracterFinal == 'L' || caracterFinal == 'R' || caracterFinal == 'F')) {
+                            System.out.println("Letras no validas.");
+                            validez=false;
+                            break;
+                        }
+                        if (!(caracter2 == ',')) {
+                            System.out.println("Posiciones de caracteres no validas.");
+                            validez=false;
+                            break;
+                        }
+                        validez=true;
+                    } else {
+                        System.out.println("Comandos invalidos.");
+                        validez=false;
+                        break;
+                       
+                    }
+                }
+            }
+        } while (validez==false);
+        return comandos;
     }
-    
+
 }
