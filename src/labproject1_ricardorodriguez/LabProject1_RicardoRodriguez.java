@@ -111,29 +111,32 @@ public class LabProject1_RicardoRodriguez {
                     // Para dejar un regalo
                     if (dejar == true) {
                         if (encimaDeRegalo == false) {
-                            if (tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
-                                System.out.println("Ha dejado un regalo en la estacion.");
-                                tablero[posCol][posFil] = 'S';
-                                tableroInterno[posCol][posFil] = ' ';
-                            }
-                            if (tableroInterno[posCol][posFil] == ' ') {
-                                System.out.println("Ha soltado un regalo.");
-                                
-                                tableroInterno[posCol][posFil] = 'j';
-                                
-                                tablero[posCol - 1][posFil] = 'S';
-                                tablero[posCol][posFil] = 'j';
+                            if (guardar == true) {
+                                if (tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
+                                    System.out.println("Ha dejado un regalo en la estacion.");
+                                    tablero[posCol][posFil] = 'S';
+                                    tableroInterno[posCol][posFil] = ' ';
+                                    if (tableroInterno[posCol][posFil] == ' ') {
+                                        System.out.println("Ha soltado un regalo.");
 
-                                if (posCol == 0) {
-                                    posCol += 1;
+                                        tableroInterno[posCol][posFil] = 'j';
 
-                                } else if (posCol == 23) {
-                                    posCol -= 1;
+                                        tablero[posCol - 1][posFil] = 'S';
+                                        tablero[posCol][posFil] = 'j';
 
-                                } else {
-                                    posCol -= 1;
+                                        if (posCol == 0) {
+                                            posCol += 1;
+
+                                        } else if (posCol == 23) {
+                                            posCol -= 1;
+
+                                        } else {
+                                            posCol -= 1;
+                                        }
+                                    }
                                 }
                             }
+                            
                         }
                     }
 
@@ -170,32 +173,44 @@ public class LabProject1_RicardoRodriguez {
             }
             
             // Motrar a Steeb
+            
             if (dejar==false){
                 if (tableroInterno[posCol][posFil] == 'j'||tableroInterno[posCol][posFil] == 'D'||tableroInterno[posCol][posFil] == 'H'||tableroInterno[posCol][posFil] == 'L') {
-                    tablero[oldPosCol][oldPosFil] = tableroInterno[posCol][posFil];
+                    tablero[oldPosCol][oldPosFil] = ' ';
                     tablero[posCol][posFil] = 'S';
-                } 
+                }
+                else if (tableroInterno[oldPosCol][oldPosFil] == 'j'||tableroInterno[oldPosCol][oldPosFil] == 'D'||tableroInterno[oldPosCol][oldPosFil] == 'H'||tableroInterno[oldPosCol][oldPosFil] == 'L'){
+                    tablero[oldPosCol][oldPosFil] = tableroInterno[oldPosCol][oldPosFil];
+                    tablero[posCol][posFil] = 'S';
+                }
                 else if (tablero[posCol][posFil]==' '){
                     tablero[oldPosCol][oldPosFil] = ' ';
                     tablero[posCol][posFil] = 'S';
                 }
                 else {
-                    tablero[posCol][posFil] = tableroInterno[oldPosCol][oldPosFil];
+                    tablero[oldPosCol][oldPosFil] = ' ';
+                    tablero[posCol][posFil] = 'S';
                 }
                 
             } else {
                 if (dejar == true) {
-                    if (encimaDeRegalo == false) {
-                        if (tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
-                            System.out.println("Ha dejado un regalo en la estacion.");
-                            tablero[posCol][posFil] = 'S';
-                        }
-                        if (tablero[posCol][posFil] == ' ') {
-                            System.out.println("Ha soltado un regalo.");
-                            tablero[oldPosCol][oldPosFil] = 'j';
-                            tablero[posCol][posFil] = 'S';
+                    if (guardar == false) {
+                        System.out.println("No tiene ningun regalo.");
+                    } else {
+                        if (encimaDeRegalo == false) {
+                            if (guardar == true) {
+                                if (tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
+                                    System.out.println("Ha dejado un regalo en la estacion.");
+                                    tablero[posCol][posFil] = 'S';
+                                }
+                            }
+
+                            if (tablero[posCol][posFil] == ' ') {
+                                System.out.println("Ha soltado un regalo.");
+                            }
                         }
                     }
+                    
                 }
                 dejar = false;
             }
