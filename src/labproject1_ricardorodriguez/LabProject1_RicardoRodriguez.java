@@ -36,10 +36,10 @@ public class LabProject1_RicardoRodriguez {
         int oldPosFil=posFil;
         
         // Acción del jugador
-        boolean guardar=false;
-        boolean recoger=false;
-        boolean dejar=false;
+        boolean puedeAgarrar=true;
+        boolean puedeDejar=false;
         boolean encimaDeRegalo=false;
+        boolean tieneRegalo=false;
         
         // Tablero
         char[][] tablero = new char[24][24];
@@ -60,8 +60,7 @@ public class LabProject1_RicardoRodriguez {
         
         // Comandos del usuario
         String comandos = "";
-        
-        
+
         // Inicio de el juego en si
         do {
             System.out.println("Comandos: ");
@@ -70,85 +69,71 @@ public class LabProject1_RicardoRodriguez {
             System.out.println("L:Izquierda");
             System.out.println("R:Derecha");
             System.out.println("F:Recoger/Poner caja");
-            comandos=ValidacionComandos(tablero);
-            
+            comandos = ValidacionComandos(tablero);
+
             // Posicion anterior del jugador
-            oldPosCol=posCol;
-            oldPosFil=posFil;
-            
+            oldPosCol = posCol;
+            oldPosFil = posFil;
+
             // Posición del jugador
-            posCol=MoverJugadorX(tablero,comandos, posCol, posFil);
-            posFil=MoverJugadorY(tablero,comandos, posCol, posFil);
-            
+            posCol = MoverJugadorX(tablero, comandos, posCol, posFil);
+            posFil = MoverJugadorY(tablero, comandos, posCol, posFil);
+
             char caracter = ' ';
             for (int i = 0; i <= comandos.length() - 1; i += 2) {
                 caracter = comandos.charAt(i);
-                if (caracter == 'F') {
-
-                    // Ver si el jugador esta sobre un regalo
-                    if (tableroInterno[posCol][posFil] == 'j') {
-                        encimaDeRegalo = true;  // Si el jugador esta sobre un regalo
-                    } else {
-                        encimaDeRegalo = false; // Si el jugador quiere dejar un regalo o no esta encima de este
-                    }
-
-                    // Para recoger un regalo
-                    if (encimaDeRegalo == true) {
-                        recoger = true;  // Si el jugador esta sobre un regalo, recogiendo el regalo
-                    } else {
-                        recoger = false; // Si el jugador esta dejando un regalo o no esta en un espacio j
-                    }
-
-                    // Para guardar un regalo
-                    if (recoger == true) {
-                        guardar = true;  // Si el jugador esta sobre un regalo, recogiendo el regalo y guardandolo
-                        tableroInterno[posCol][posFil] = ' ';
-                        dejar = false;
-                    } else {
-                        guardar = false; // Si el jugador esta dejando un regalo
-                        dejar = true;
-                    }
-                    // Para dejar un regalo
-                    if (dejar == true) {
-                        if (encimaDeRegalo == false) {
-                            if (guardar == true) {
-                                if (tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
-                                    System.out.println("Ha dejado un regalo en la estacion.");
-                                    tablero[posCol][posFil] = 'S';
-                                    tableroInterno[posCol][posFil] = ' ';
-                                    if (tableroInterno[posCol][posFil] == ' ') {
-                                        System.out.println("Ha soltado un regalo.");
-
-                                        tableroInterno[posCol][posFil] = 'j';
-
-                                        tablero[posCol - 1][posFil] = 'S';
-                                        tablero[posCol][posFil] = 'j';
-
-                                        if (posCol == 0) {
-                                            posCol += 1;
-
-                                        } else if (posCol == 23) {
-                                            posCol -= 1;
-
-                                        } else {
-                                            posCol -= 1;
-                                        }
-                                    }
-                                }
+                
+                if (caracter == 'F') {  
+                    if (tieneRegalo == true) {
+                        // Dejar un regalo en las estaciones
+                        if (tableroInterno[posCol][posFil] == 'D' ||tableroInterno[posCol][posFil] == 'H' ||tableroInterno[posCol][posFil] == 'L') {
+                            System.out.println("Ha dejado un regalo en la estacion");
+                            System.out.println("");
+                            tableroInterno[posCol][posFil] = ' ';
+                            tieneRegalo = false; 
+                        }
+                        // Si esta en un espacio vacío
+                        else if (tableroInterno[posCol][posFil] == ' ') { // Si quiere soltar un regalo
+                            System.out.println("Ha soltado un regalo.");
+                            System.out.println("");
+                            tableroInterno[posCol][posFil] = 'j'; // Guardar en el tablero interno
+                            tieneRegalo = false;
+                             if (posCol == 0) {
+                                tablero[posCol + 1][posFil] = 'S';
+                                tablero[posCol][posFil] = 'j';
+                                posCol += 1;
+                            } else if (posCol <= 23) {
+                                tablero[posCol - 1][posFil] = 'S';
+                                tablero[posCol][posFil] = 'j';
+                                posCol -= 1;
+                            } else {
+                                posCol -= 1;
+                                tablero[posCol - 1][posFil] = 'S';
+                                tablero[posCol][posFil] = 'j';
                             }
-                            
+                        }
+                        else { // Si ya tiene un regalo y quiere agarrar otro 
+                            System.out.println("No puede agarrar otro regalo.");
+                            System.out.println("");
+                        }
+
+                    } else { // Agarrar un regalo
+                        if (tableroInterno[posCol][posFil] == 'j') {
+                            tieneRegalo = true;
+                            tableroInterno[posCol][posFil] = ' ';
+                        } else { // Si intenta dejar un regalo sin tener uno
+                            System.out.println("No tiene un regalo.");
+                            System.out.println("");
                         }
                     }
-
-                } // fin del if para caracter F
-
-            } // fin del for
+                } 
+            } // fin del for 
 
             // Tocar Obstáculo
-            if (    // inicio del if
+            if ( // inicio del if
                     // Obstáculos
-                    tablero[posCol][posFil]=='X'||
-                    tablero[posCol][posFil]=='O'||
+                    tablero[posCol][posFil] == 'X'
+                    || tablero[posCol][posFil]=='O'||
                     tablero[posCol][posFil]=='o'||
                     tablero[posCol][posFil]=='0'||
                     tablero[posCol][posFil]=='^'||
@@ -173,8 +158,7 @@ public class LabProject1_RicardoRodriguez {
             }
             
             // Motrar a Steeb
-            
-            if (dejar==false){
+            if (tieneRegalo==false){
                 if (tableroInterno[posCol][posFil] == 'j'||tableroInterno[posCol][posFil] == 'D'||tableroInterno[posCol][posFil] == 'H'||tableroInterno[posCol][posFil] == 'L') {
                     tablero[oldPosCol][oldPosFil] = ' ';
                     tablero[posCol][posFil] = 'S';
@@ -193,26 +177,21 @@ public class LabProject1_RicardoRodriguez {
                 }
                 
             } else {
-                if (dejar == true) {
-                    if (guardar == false) {
-                        System.out.println("No tiene ningun regalo.");
-                    } else {
-                        if (encimaDeRegalo == false) {
-                            if (guardar == true) {
-                                if (tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
-                                    System.out.println("Ha dejado un regalo en la estacion.");
-                                    tablero[posCol][posFil] = 'S';
-                                }
-                            }
-
-                            if (tablero[posCol][posFil] == ' ') {
-                                System.out.println("Ha soltado un regalo.");
-                            }
-                        }
-                    }
-                    
+                
+                if (tableroInterno[posCol][posFil] == 'j' || tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
+                    tablero[oldPosCol][oldPosFil] = ' ';
+                    tablero[posCol][posFil] = 'S';
+                } else if (tableroInterno[oldPosCol][oldPosFil] == 'j' || tableroInterno[oldPosCol][oldPosFil] == 'D' || tableroInterno[oldPosCol][oldPosFil] == 'H' || tableroInterno[oldPosCol][oldPosFil] == 'L') {
+                    tablero[oldPosCol][oldPosFil] = tableroInterno[oldPosCol][oldPosFil];
+                    tablero[posCol][posFil] = 'S';
+                } else if (tablero[posCol][posFil] == ' ') {
+                    tablero[oldPosCol][oldPosFil] = ' ';
+                    tablero[posCol][posFil] = 'S';
+                } else {
+                    tablero[oldPosCol][oldPosFil] = ' ';
+                    tablero[posCol][posFil] = 'S';
                 }
-                dejar = false;
+
             }
             
             
@@ -221,7 +200,7 @@ public class LabProject1_RicardoRodriguez {
             System.out.println("");
             
             // Si el jugador tiene un regalo
-            if (guardar == true) {
+            if (tieneRegalo == true) {
                 System.out.println("Tiene un regalo.");
                 System.out.println("");
             } 
@@ -230,7 +209,7 @@ public class LabProject1_RicardoRodriguez {
             //ImprimirTablero(tableroInterno);
             //System.out.println("");
             
-        } while (ganar==false||perder==false);
+        } while (ganar==false&&perder==false);
         
         // Mostrar ganar en consola
         if (ganar==true){
@@ -493,6 +472,7 @@ public class LabProject1_RicardoRodriguez {
             System.out.println("");
             System.out.println("Ingrese los comandos separados por ',': ");
             comandos = input.next();
+            System.out.println("");
             
             // Longitud de un solo char
             caracter = comandos.charAt(0);
@@ -539,3 +519,4 @@ public class LabProject1_RicardoRodriguez {
     }
 
 }
+
