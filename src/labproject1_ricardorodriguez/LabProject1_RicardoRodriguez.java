@@ -102,6 +102,7 @@ public class LabProject1_RicardoRodriguez {
                     // Para guardar un regalo
                     if (recoger == true) {
                         guardar = true;  // Si el jugador esta sobre un regalo, recogiendo el regalo y guardandolo
+                        tableroInterno[posCol][posFil] = ' ';
                         dejar = false;
                     } else {
                         guardar = false; // Si el jugador esta dejando un regalo
@@ -110,15 +111,18 @@ public class LabProject1_RicardoRodriguez {
                     // Para dejar un regalo
                     if (dejar == true) {
                         if (encimaDeRegalo == false) {
-                            if (tableroInterno[posCol][posFil] == 'D' || tablero[posCol][posFil] == 'H' || tablero[posCol][posFil] == 'L') {
+                            if (tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
                                 System.out.println("Ha dejado un regalo en la estacion.");
                                 tablero[posCol][posFil] = 'S';
+                                tableroInterno[posCol][posFil] = ' ';
                             }
-                            if (tablero[posCol][posFil] == ' ') {
+                            if (tableroInterno[posCol][posFil] == ' ') {
                                 System.out.println("Ha soltado un regalo.");
-                                tablero[posCol][posFil] = 'j';
+                                
                                 tableroInterno[posCol][posFil] = 'j';
+                                
                                 tablero[posCol - 1][posFil] = 'S';
+                                tablero[posCol][posFil] = 'j';
 
                                 if (posCol == 0) {
                                     posCol += 1;
@@ -166,29 +170,48 @@ public class LabProject1_RicardoRodriguez {
             }
             
             // Motrar a Steeb
-            tablero[oldPosCol][oldPosFil]=' ';
-            tablero[posCol][posFil]='S';
+            if (dejar==false){
+                if (tableroInterno[posCol][posFil] == 'j'||tableroInterno[posCol][posFil] == 'D'||tableroInterno[posCol][posFil] == 'H'||tableroInterno[posCol][posFil] == 'L') {
+                    tablero[oldPosCol][oldPosFil] = tableroInterno[posCol][posFil];
+                    tablero[posCol][posFil] = 'S';
+                } 
+                else if (tablero[posCol][posFil]==' '){
+                    tablero[oldPosCol][oldPosFil] = ' ';
+                    tablero[posCol][posFil] = 'S';
+                }
+                else {
+                    tablero[posCol][posFil] = tableroInterno[oldPosCol][oldPosFil];
+                }
+                
+            } else {
+                if (dejar == true) {
+                    if (encimaDeRegalo == false) {
+                        if (tableroInterno[posCol][posFil] == 'D' || tableroInterno[posCol][posFil] == 'H' || tableroInterno[posCol][posFil] == 'L') {
+                            System.out.println("Ha dejado un regalo en la estacion.");
+                            tablero[posCol][posFil] = 'S';
+                        }
+                        if (tablero[posCol][posFil] == ' ') {
+                            System.out.println("Ha soltado un regalo.");
+                            tablero[oldPosCol][oldPosFil] = 'j';
+                            tablero[posCol][posFil] = 'S';
+                        }
+                    }
+                }
+                dejar = false;
+            }
+            
             
             // Imprimir el tablero
             ImprimirTablero(tablero);
             System.out.println("");
             
-            if (dejar == true) {
-                if (encimaDeRegalo == false) {
-                    if (tableroInterno[posCol][posFil] == 'D' || tablero[posCol][posFil] == 'H' || tablero[posCol][posFil] == 'L') {
-                        System.out.println("Ha dejado un regalo en la estacion.");
-                    }
-                    if (tablero[posCol][posFil] == ' ') {
-                        System.out.println("Ha soltado un regalo.");
-                    }
-                }
-            }
-            
-            if (recoger == true) {
-                System.out.println("Ha recogido un regalo.");
+            // Si el jugador tiene un regalo
+            if (guardar == true) {
+                System.out.println("Tiene un regalo.");
+                System.out.println("");
             } 
 
-            // Imprimir el tablero interno (Debug)
+            //Imprimir el tablero interno (Debug)
             ImprimirTablero(tableroInterno);
             System.out.println("");
             
